@@ -28,220 +28,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GP Clinical Lung Function Referral Form 2025 — Patient</title>
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    font-size: 15px;
-    line-height: 1.5;
-    color: #333;
-    background: #fff;
-    padding: 20px;
-  }
-
-  .form-container {
-    max-width: 700px;
-    margin: 0 auto;
-  }
-
-  h1 {
-    font-size: 22px;
-    font-weight: 700;
-    color: #1a3c5e;
-    text-align: center;
-    margin-bottom: 8px;
-  }
-
-  .form-subtitle {
-    text-align: center;
-    color: #666;
-    font-size: 13px;
-    margin-bottom: 28px;
-  }
-
-  .form-group {
-    margin-bottom: 18px;
-  }
-
-  label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 5px;
-    font-size: 14px;
-    color: #222;
-  }
-
-  label .required {
-    color: #e74c3c;
-    margin-left: 2px;
-  }
-
-  input[type="text"],
-  input[type="date"],
-  input[type="tel"],
-  select {
-    width: 100%;
-    padding: 10px 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 15px;
-    font-family: inherit;
-    color: #333;
-    background: #fff;
-    transition: border-color 0.2s;
-  }
-
-  input:focus, select:focus {
-    outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.15);
-  }
-
-  .dob-row {
-    display: flex;
-    gap: 10px;
-  }
-
-  .dob-row select { flex: 1; }
-
-  .radio-group, .checkbox-group {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 4px;
-  }
-
-  .radio-group label, .checkbox-group label {
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    cursor: pointer;
-    font-size: 14px;
-  }
-
-  .radio-group input, .checkbox-group input {
-    width: 16px;
-    height: 16px;
-    margin: 0;
-    cursor: pointer;
-  }
-
-  .file-upload-wrapper {
-    margin-top: 4px;
-  }
-
-  input[type="file"] {
-    font-size: 14px;
-    font-family: inherit;
-  }
-
-  .file-info {
-    font-size: 12px;
-    color: #888;
-    margin-top: 4px;
-  }
-
-  .error-text {
-    color: #e74c3c;
-    font-size: 12px;
-    margin-top: 4px;
-    display: none;
-  }
-
-  .field-error input,
-  .field-error select {
-    border-color: #e74c3c;
-  }
-
-  .field-error .error-text {
-    display: block;
-  }
-
-  .submit-btn {
-    display: block;
-    width: 100%;
-    padding: 14px;
-    background: #1a3c5e;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: 600;
-    cursor: pointer;
-    margin-top: 28px;
-    transition: background 0.2s;
-  }
-
-  .submit-btn:hover { background: #15334f; }
-  .submit-btn:disabled { background: #999; cursor: not-allowed; }
-
-  .submit-btn .spinner {
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: spin 0.6s linear infinite;
-    vertical-align: middle;
-    margin-right: 8px;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .error-banner {
-    background: #fdeaea;
-    border: 1px solid #e74c3c;
-    color: #c0392b;
-    padding: 12px 16px;
-    border-radius: 4px;
-    margin-bottom: 16px;
-    font-size: 14px;
-    display: none;
-  }
-
-  .success-message {
-    text-align: center;
-    padding: 60px 20px;
-    display: none;
-  }
-
-  .success-message h2 {
-    color: #27ae60;
-    font-size: 24px;
-    margin-bottom: 12px;
-  }
-
-  .success-message p {
-    color: #555;
-    font-size: 16px;
-    margin-bottom: 24px;
-  }
-
-  .success-message a {
-    color: #3498db;
-    text-decoration: none;
-    font-weight: 600;
-    cursor: pointer;
-  }
-
-  .success-message a:hover { text-decoration: underline; }
-
-  @media (max-width: 480px) {
-    body { padding: 12px; }
-    h1 { font-size: 18px; }
-    .dob-row { flex-direction: column; gap: 6px; }
-  }
-</style>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
 <div class="form-container">
-  <h1>GP CLINICAL LUNG FUNCTION REFERRAL FORM 2025</h1>
-  <p class="form-subtitle">Respiratory Testing Solutions — Patient Referral</p>
-
   <!-- Success message -->
   <div class="success-message" id="successMessage">
     <h2>Thank You</h2>
@@ -269,16 +60,17 @@
 
     <!-- 3. DOB -->
     <div class="form-group" id="group-dob">
-      <label>Date of Birth <span class="required">*</span></label>
+      <label>DOB <span class="required">*</span></label>
+      <div class="dob-labels"><span>Day</span><span>Month</span><span>Year</span></div>
       <div class="dob-row">
         <select id="dobDay" required>
-          <option value="">Day</option>
+          <option value=""></option>
         </select>
         <select id="dobMonth" required>
-          <option value="">Month</option>
+          <option value=""></option>
         </select>
         <select id="dobYear" required>
-          <option value="">Year</option>
+          <option value=""></option>
         </select>
       </div>
       <div class="error-text">Please select day, month, and year</div>
@@ -332,7 +124,7 @@
     <!-- 10. Clinical Tests -->
     <div class="form-group" id="group-clinicalTests">
       <label>Clinical Tests <span class="required">*</span></label>
-      <div class="checkbox-group" id="clinicalTests">
+      <div class="checkbox-grid" id="clinicalTests">
         <label><input type="checkbox" name="clinicalTests" value="Full Lung Function (PFT)"> Full Lung Function (PFT)</label>
         <label><input type="checkbox" name="clinicalTests" value="Full Lung Function With Inspiratory Loop"> Full Lung Function With Inspiratory Loop</label>
         <label><input type="checkbox" name="clinicalTests" value="Fraction Of Expired Nitric Oxide Analysis (FENO)"> Fraction Of Expired Nitric Oxide Analysis (FENO)</label>
@@ -351,6 +143,10 @@
       <div class="file-upload-wrapper">
         <input type="file" id="fileUpload"
                accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.tif,.tiff">
+        <button type="button" class="file-upload-btn" onclick="document.getElementById('fileUpload').click()">
+          <span>+</span> Upload File
+        </button>
+        <div class="file-name" id="fileName"></div>
       </div>
       <div class="file-info">Accepted: PDF, DOC, DOCX, JPG, PNG, TIF. Max 10MB.</div>
       <div class="error-text" id="fileError">File must be under 10MB and an accepted type</div>
@@ -375,7 +171,7 @@
     </div>
 
     <!-- 13. Submit -->
-    <button type="submit" class="submit-btn" id="submitBtn">Submit Referral</button>
+    <button type="submit" class="submit-btn" id="submitBtn">Submit</button>
   </form>
 </div>
 
@@ -414,6 +210,12 @@
     opt.textContent = y;
     dobYear.appendChild(opt);
   }
+
+  // ── File upload display ──────────────────────────────────────────────
+  document.getElementById('fileUpload').addEventListener('change', function() {
+    var name = this.files.length > 0 ? this.files[0].name : '';
+    document.getElementById('fileName').textContent = name;
+  });
 
   // ── Validation ───────────────────────────────────────────────────────
   var ACCEPTED_EXTS = ['.pdf','.doc','.docx','.jpg','.jpeg','.png','.tif','.tiff'];
@@ -563,7 +365,7 @@
         errorBanner.textContent = 'There was a problem submitting your referral. Please try again or contact us at (08) 9331 6371.';
         errorBanner.style.display = 'block';
         submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit Referral';
+        submitBtn.textContent = 'Submit';
       }
     })();
   });
@@ -575,7 +377,7 @@
     document.getElementById('successMessage').style.display = 'none';
     errorBanner.style.display = 'none';
     submitBtn.disabled = false;
-    submitBtn.textContent = 'Submit Referral';
+    submitBtn.textContent = 'Submit';
     var errors = form.querySelectorAll('.field-error');
     for (var i = 0; i < errors.length; i++) errors[i].classList.remove('field-error');
     window.scrollTo(0, 0);

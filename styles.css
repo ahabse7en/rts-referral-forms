@@ -1,0 +1,344 @@
+/* =============================================================================
+   RTS Referral Forms — Shared Stylesheet
+   ============================================================================= */
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #333;
+  background: #fff;
+  padding: 20px;
+}
+
+.form-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+/* ── Form groups & labels ──────────────────────────────────────────────── */
+
+.form-group {
+  margin-bottom: 16px;
+}
+
+label {
+  display: block;
+  font-weight: 400;
+  margin-bottom: 4px;
+  font-size: 14px;
+  color: #1a3050;
+}
+
+label .required {
+  color: #c0392b;
+  margin-left: 1px;
+}
+
+.helper-text {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+/* ── Inputs, selects, textareas ────────────────────────────────────────── */
+
+input[type="text"],
+input[type="date"],
+input[type="tel"],
+input[type="email"],
+textarea,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #b0b8c1;
+  border-radius: 6px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #333;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+input:focus, textarea:focus, select:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.15);
+}
+
+textarea { resize: vertical; min-height: 90px; }
+
+/* ── DOB row ───────────────────────────────────────────────────────────── */
+
+.dob-row {
+  display: flex;
+  gap: 10px;
+}
+
+.dob-row select { flex: 1; }
+
+.dob-labels {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.dob-labels span {
+  flex: 1;
+  font-weight: 600;
+  font-size: 13px;
+  color: #1a3050;
+}
+
+/* ── Radio & checkbox groups ───────────────────────────────────────────── */
+
+.radio-group, .checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.radio-group label, .checkbox-group label {
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.radio-group input, .checkbox-group input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  cursor: pointer;
+}
+
+/* ── Two-column checkbox grid (Clinical Tests) ─────────────────────────── */
+
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 24px;
+  margin-top: 4px;
+}
+
+.checkbox-grid label {
+  font-weight: 400;
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #333;
+}
+
+.checkbox-grid input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  margin-top: 2px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ── Pill / tag toggles (Pre-existing Conditions) ──────────────────────── */
+
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.pill-group input[type="checkbox"] {
+  display: none;
+}
+
+.pill-group label {
+  display: inline-block;
+  padding: 6px 16px;
+  border: 1px solid #b0b8c1;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 400;
+  color: #333;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.pill-group label:hover {
+  border-color: #3b82f6;
+  color: #3b82f6;
+}
+
+.pill-group input[type="checkbox"]:checked + label {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: #fff;
+}
+
+/* ── Single checkbox ───────────────────────────────────────────────────── */
+
+.single-checkbox {
+  margin-top: 4px;
+}
+
+.single-checkbox label {
+  font-weight: 400;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+
+/* ── File upload ───────────────────────────────────────────────────────── */
+
+.file-upload-wrapper {
+  margin-top: 4px;
+}
+
+.file-upload-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  background: #3b82f6;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.file-upload-btn:hover { background: #2563eb; }
+
+.file-upload-btn span { font-size: 18px; line-height: 1; }
+
+input[type="file"] {
+  display: none;
+}
+
+.file-name {
+  font-size: 13px;
+  color: #555;
+  margin-top: 6px;
+}
+
+.file-info {
+  font-size: 12px;
+  color: #888;
+  margin-top: 4px;
+}
+
+/* ── Validation errors ─────────────────────────────────────────────────── */
+
+.error-text {
+  color: #e74c3c;
+  font-size: 12px;
+  margin-top: 4px;
+  display: none;
+}
+
+.field-error input,
+.field-error textarea,
+.field-error select {
+  border-color: #e74c3c;
+}
+
+.field-error .error-text {
+  display: block;
+}
+
+/* ── Submit button ─────────────────────────────────────────────────────── */
+
+.submit-btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  background: #2563eb;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 28px;
+  transition: background 0.2s;
+}
+
+.submit-btn:hover { background: #1d4ed8; }
+.submit-btn:disabled { background: #93b4f5; cursor: not-allowed; }
+
+.submit-btn .spinner {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Error banner ──────────────────────────────────────────────────────── */
+
+.error-banner {
+  background: #fdeaea;
+  border: 1px solid #e74c3c;
+  color: #c0392b;
+  padding: 12px 16px;
+  border-radius: 6px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  display: none;
+}
+
+/* ── Success message ───────────────────────────────────────────────────── */
+
+.success-message {
+  text-align: center;
+  padding: 60px 20px;
+  display: none;
+}
+
+.success-message h2 {
+  color: #27ae60;
+  font-size: 24px;
+  margin-bottom: 12px;
+}
+
+.success-message p {
+  color: #555;
+  font-size: 16px;
+  margin-bottom: 24px;
+}
+
+.success-message a {
+  color: #3b82f6;
+  text-decoration: none;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.success-message a:hover { text-decoration: underline; }
+
+/* ── Responsive ────────────────────────────────────────────────────────── */
+
+@media (max-width: 480px) {
+  body { padding: 12px; }
+  .dob-row { flex-direction: column; gap: 6px; }
+  .dob-labels { flex-direction: column; gap: 0; }
+  .checkbox-grid { grid-template-columns: 1fr; }
+}
