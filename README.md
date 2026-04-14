@@ -48,7 +48,7 @@ referral-forms/
 3. Delete the default code and paste the contents of `apps-script/Code.gs`
 4. Update the configuration constants at the top:
    ```js
-   const ADMIN_EMAIL     = 'info@respiratorytesting.com.au';
+   const ADMIN_EMAIL     = 'your@email.here';
    const SPREADSHEET_ID  = 'your-spreadsheet-id';
    const DRIVE_FOLDER_ID = 'your-drive-folder-id';
    ```
