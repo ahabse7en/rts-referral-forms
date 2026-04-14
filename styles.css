@@ -184,6 +184,13 @@ textarea { resize: vertical; min-height: 90px; }
   color: #fff;
 }
 
+/* Light tint variant (e.g. locations) */
+.pill-group--light input[type="checkbox"]:checked + label {
+  background: #eef4ff;
+  border-color: #3b82f6;
+  color: #1d4ed8;
+}
+
 /* ── Single checkbox ───────────────────────────────────────────────────── */
 
 .single-checkbox {
