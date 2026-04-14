@@ -1,0 +1,679 @@
+<!--
+  WIX DEPLOYMENT — Hospital Referral Form
+  =====================================================
+  1. Open your Wix site in the Editor
+  2. Navigate to the Hospital Referrals page
+  3. Delete or hide the existing Wix Form element
+  4. Click "+" (Add Elements) → "Embed Code" → "Embed HTML"
+  5. Drag the element to fill the form area
+  6. Resize: width 100% of column, height ~1800px (adjust after testing)
+  7. Click "Enter Code" and paste this entire file
+  8. Click "Apply"
+  9. Preview — test submission, check email arrives
+  10. Publish
+
+  ALTERNATIVE (hosted file — recommended for easier updates):
+  1. Host this file at a stable HTTPS URL (GitHub Pages, Netlify, etc.)
+  2. In Wix, use "Embed a Site" instead and enter the URL
+  3. Future updates: edit the hosted file, no Wix changes needed
+
+  CONFIGURATION:
+  - Set SUBMIT_ENDPOINT below to your deployed Google Apps Script URL
+  - The script URL looks like:
+    https://script.google.com/macros/s/AKfycbx.../exec
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hospital Clinical Lung Function Referral Form 2025</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    color: #333;
+    background: #fff;
+    padding: 20px;
+  }
+
+  .form-container {
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a3c5e;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+
+  .form-subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 13px;
+    margin-bottom: 28px;
+  }
+
+  .form-group {
+    margin-bottom: 18px;
+  }
+
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 5px;
+    font-size: 14px;
+    color: #222;
+  }
+
+  label .required {
+    color: #e74c3c;
+    margin-left: 2px;
+  }
+
+  .helper-text {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 4px;
+  }
+
+  input[type="text"],
+  input[type="date"],
+  input[type="tel"],
+  input[type="email"],
+  textarea,
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 15px;
+    font-family: inherit;
+    color: #333;
+    background: #fff;
+    transition: border-color 0.2s;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.15);
+  }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  .dob-row {
+    display: flex;
+    gap: 10px;
+  }
+
+  .dob-row select { flex: 1; }
+
+  .radio-group, .checkbox-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .radio-group label, .checkbox-group label {
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+
+  .radio-group input, .checkbox-group input {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .single-checkbox {
+    margin-top: 4px;
+  }
+
+  .single-checkbox label {
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+  }
+
+  .file-upload-wrapper {
+    margin-top: 4px;
+  }
+
+  input[type="file"] {
+    font-size: 14px;
+    font-family: inherit;
+  }
+
+  .file-info {
+    font-size: 12px;
+    color: #888;
+    margin-top: 4px;
+  }
+
+  .error-text {
+    color: #e74c3c;
+    font-size: 12px;
+    margin-top: 4px;
+    display: none;
+  }
+
+  .field-error input,
+  .field-error textarea,
+  .field-error select {
+    border-color: #e74c3c;
+  }
+
+  .field-error .error-text {
+    display: block;
+  }
+
+  .submit-btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: #1a3c5e;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 28px;
+    transition: background 0.2s;
+  }
+
+  .submit-btn:hover { background: #15334f; }
+  .submit-btn:disabled { background: #999; cursor: not-allowed; }
+
+  .submit-btn .spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.6s linear infinite;
+    vertical-align: middle;
+    margin-right: 8px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .error-banner {
+    background: #fdeaea;
+    border: 1px solid #e74c3c;
+    color: #c0392b;
+    padding: 12px 16px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    display: none;
+  }
+
+  .success-message {
+    text-align: center;
+    padding: 60px 20px;
+    display: none;
+  }
+
+  .success-message h2 {
+    color: #27ae60;
+    font-size: 24px;
+    margin-bottom: 12px;
+  }
+
+  .success-message p {
+    color: #555;
+    font-size: 16px;
+    margin-bottom: 24px;
+  }
+
+  .success-message a {
+    color: #3498db;
+    text-decoration: none;
+    font-weight: 600;
+    cursor: pointer;
+  }
+
+  .success-message a:hover { text-decoration: underline; }
+
+  @media (max-width: 480px) {
+    body { padding: 12px; }
+    h1 { font-size: 18px; }
+    .dob-row { flex-direction: column; gap: 6px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="form-container">
+  <h1>HOSPITAL CLINICAL LUNG FUNCTION REFERRAL FORM 2025</h1>
+  <p class="form-subtitle">Respiratory Testing Solutions</p>
+
+  <!-- Success message (hidden until submission) -->
+  <div class="success-message" id="successMessage">
+    <h2>Thank You</h2>
+    <p>Your referral has been submitted. Our team will be in touch shortly.</p>
+    <a onclick="resetForm()">Submit another referral</a>
+  </div>
+
+  <!-- Form -->
+  <form id="referralForm" novalidate>
+    <div class="error-banner" id="errorBanner"></div>
+
+    <!-- 1. Request Date -->
+    <div class="form-group" id="group-requestDate">
+      <label>Request Date <span class="required">*</span></label>
+      <input type="date" id="requestDate" required>
+      <div class="error-text">Please select a date</div>
+    </div>
+
+    <!-- 2. Hospital Name -->
+    <div class="form-group" id="group-hospitalName">
+      <label>Hospital Name <span class="required">*</span></label>
+      <input type="text" id="hospitalName" required>
+      <div class="error-text">Please enter the hospital name</div>
+    </div>
+
+    <!-- 3. Hospital Name (other) -->
+    <div class="form-group" id="group-hospitalNameOther">
+      <label>Hospital Name (Other)</label>
+      <div class="helper-text">If other please state</div>
+      <input type="text" id="hospitalNameOther">
+    </div>
+
+    <!-- 4. Hospital Department -->
+    <div class="form-group" id="group-hospitalDepartment">
+      <label>Hospital Department <span class="required">*</span></label>
+      <input type="text" id="hospitalDepartment" required>
+      <div class="error-text">Please enter the department</div>
+    </div>
+
+    <!-- 5. Requesting Doctor / Consultant -->
+    <div class="form-group" id="group-requestingDoctor">
+      <label>Requesting Doctor / Consultant <span class="required">*</span></label>
+      <input type="text" id="requestingDoctor" required>
+      <div class="error-text">Please enter the requesting doctor</div>
+    </div>
+
+    <!-- 6. Provider No -->
+    <div class="form-group">
+      <label>Provider No</label>
+      <input type="text" id="providerNo">
+    </div>
+
+    <!-- 7. Patient Full Name -->
+    <div class="form-group" id="group-patientFullName">
+      <label>Patient Full Name <span class="required">*</span></label>
+      <input type="text" id="patientFullName" required>
+      <div class="error-text">Please enter the patient's full name</div>
+    </div>
+
+    <!-- 8. Patient DOB -->
+    <div class="form-group" id="group-patientDOB">
+      <label>Patient Date of Birth <span class="required">*</span></label>
+      <div class="dob-row">
+        <select id="dobDay" required>
+          <option value="">Day</option>
+        </select>
+        <select id="dobMonth" required>
+          <option value="">Month</option>
+        </select>
+        <select id="dobYear" required>
+          <option value="">Year</option>
+        </select>
+      </div>
+      <div class="error-text">Please select day, month, and year</div>
+    </div>
+
+    <!-- 9. Patient Phone / Mobile -->
+    <div class="form-group" id="group-patientPhone">
+      <label>Patient Phone / Mobile <span class="required">*</span></label>
+      <input type="tel" id="patientPhone" required>
+      <div class="error-text">Please enter a valid phone number (at least 8 digits)</div>
+    </div>
+
+    <!-- 10. Patient Address -->
+    <div class="form-group" id="group-patientAddress">
+      <label>Patient Address <span class="required">*</span></label>
+      <input type="text" id="patientAddress" required>
+      <div class="error-text">Please enter the patient's address</div>
+    </div>
+
+    <!-- 11. Patient Medicare Number -->
+    <div class="form-group" id="group-patientMedicare">
+      <label>Patient Medicare Number <span class="required">*</span></label>
+      <input type="text" id="patientMedicare" required>
+      <div class="error-text">Please enter the Medicare number</div>
+    </div>
+
+    <!-- 12. Gender -->
+    <div class="form-group">
+      <label>Gender</label>
+      <div class="radio-group">
+        <label><input type="radio" name="gender" value="Female"> Female</label>
+        <label><input type="radio" name="gender" value="Male"> Male</label>
+        <label><input type="radio" name="gender" value="Undisclosed"> Undisclosed</label>
+      </div>
+    </div>
+
+    <!-- 13. Urgent Results -->
+    <div class="form-group">
+      <div class="single-checkbox">
+        <label><input type="checkbox" id="urgentResults"> Urgent Results</label>
+      </div>
+    </div>
+
+    <!-- 14. Recent HB (<3 months) -->
+    <div class="form-group">
+      <div class="single-checkbox">
+        <label><input type="checkbox" id="recentHB"> Recent HB (&lt;3 months)</label>
+      </div>
+    </div>
+
+    <!-- 15. Clinical Tests -->
+    <div class="form-group" id="group-clinicalTests">
+      <label>Clinical Tests <span class="required">*</span></label>
+      <div class="checkbox-group" id="clinicalTests">
+        <label><input type="checkbox" name="clinicalTests" value="Full Lung Function (PFT)"> Full Lung Function (PFT)</label>
+        <label><input type="checkbox" name="clinicalTests" value="Full Lung Function With Inspiratory Loop"> Full Lung Function With Inspiratory Loop</label>
+        <label><input type="checkbox" name="clinicalTests" value="Fraction Of Expired Nitric Oxide Analysis (FENO)"> Fraction Of Expired Nitric Oxide Analysis (FENO)</label>
+        <label><input type="checkbox" name="clinicalTests" value="Spirometry"> Spirometry</label>
+        <label><input type="checkbox" name="clinicalTests" value="Bronchial Provocation (MANNITOL)"> Bronchial Provocation (MANNITOL)</label>
+        <label><input type="checkbox" name="clinicalTests" value="6 Minute Walk Test (6MWT)"> 6 Minute Walk Test (6MWT)</label>
+        <label><input type="checkbox" name="clinicalTests" value="Respiratory Muscle Strength"> Respiratory Muscle Strength</label>
+        <label><input type="checkbox" name="clinicalTests" value="Altitude Simulation"> Altitude Simulation</label>
+      </div>
+      <div class="error-text">Please select at least one clinical test</div>
+    </div>
+
+    <!-- 16. Pre-existing Conditions -->
+    <div class="form-group" id="group-preExistingConditions">
+      <label>Pre-existing Conditions <span class="required">*</span></label>
+      <div class="checkbox-group" id="preExistingConditions">
+        <label><input type="checkbox" name="preExistingConditions" value="Asthma"> Asthma</label>
+        <label><input type="checkbox" name="preExistingConditions" value="COPD"> COPD</label>
+        <label><input type="checkbox" name="preExistingConditions" value="Interstitial lung disease"> Interstitial lung disease</label>
+        <label><input type="checkbox" name="preExistingConditions" value="Bronchiectasis"> Bronchiectasis</label>
+        <label><input type="checkbox" name="preExistingConditions" value="Cystic fibrosis"> Cystic fibrosis</label>
+        <label><input type="checkbox" name="preExistingConditions" value="Pulmonary hypertension"> Pulmonary hypertension</label>
+        <label><input type="checkbox" name="preExistingConditions" value="Asbestosis"> Asbestosis</label>
+        <label><input type="checkbox" name="preExistingConditions" value="Silicosis"> Silicosis</label>
+        <label><input type="checkbox" name="preExistingConditions" value="None"> None</label>
+      </div>
+      <div class="error-text">Please select at least one option</div>
+    </div>
+
+    <!-- 17. Clinical Notes -->
+    <div class="form-group">
+      <label>Clinical Notes</label>
+      <textarea id="clinicalNotes" rows="4"></textarea>
+    </div>
+
+    <!-- 18. File Upload -->
+    <div class="form-group" id="group-fileUpload">
+      <label>Upload File</label>
+      <div class="file-upload-wrapper">
+        <input type="file" id="fileUpload"
+               accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.tif,.tiff">
+      </div>
+      <div class="file-info">Accepted: PDF, DOC, DOCX, JPG, PNG, TIF. Max 10MB.</div>
+      <div class="error-text" id="fileError">File must be under 10MB and an accepted type</div>
+    </div>
+
+    <!-- 19. Results Email -->
+    <div class="form-group" id="group-resultsEmail">
+      <label>Results Email <span class="required">*</span></label>
+      <input type="email" id="resultsEmail" required>
+      <div class="error-text">Please enter a valid email address</div>
+    </div>
+
+    <!-- 20. Submit -->
+    <button type="submit" class="submit-btn" id="submitBtn">Submit Referral</button>
+  </form>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ── Configuration ────────────────────────────────────────────────────
+  var SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxtwNuGKH1hWLNiyeWUJXeztDAAn0PtP1AntHzveuRCr-i8E7Kibcnv4KhPEnW5dmvdBw/exec'; // Paste your Google Apps Script deployment URL here
+  var FORM_TYPE = 'hospital';
+
+  // ── Populate DOB dropdowns ───────────────────────────────────────────
+  var dobDay   = document.getElementById('dobDay');
+  var dobMonth = document.getElementById('dobMonth');
+  var dobYear  = document.getElementById('dobYear');
+
+  for (var d = 1; d <= 31; d++) {
+    var opt = document.createElement('option');
+    opt.value = d < 10 ? '0' + d : '' + d;
+    opt.textContent = d;
+    dobDay.appendChild(opt);
+  }
+
+  var months = ['January','February','March','April','May','June',
+                'July','August','September','October','November','December'];
+  for (var m = 0; m < months.length; m++) {
+    var opt = document.createElement('option');
+    opt.value = m < 9 ? '0' + (m + 1) : '' + (m + 1);
+    opt.textContent = months[m];
+    dobMonth.appendChild(opt);
+  }
+
+  var currentYear = new Date().getFullYear();
+  for (var y = currentYear; y >= 1920; y--) {
+    var opt = document.createElement('option');
+    opt.value = '' + y;
+    opt.textContent = y;
+    dobYear.appendChild(opt);
+  }
+
+  // ── Validation ───────────────────────────────────────────────────────
+  var ACCEPTED_TYPES = [
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'image/jpeg', 'image/png', 'image/tiff'
+  ];
+  var ACCEPTED_EXTS = ['.pdf','.doc','.docx','.jpg','.jpeg','.png','.tif','.tiff'];
+  var MAX_FILE_SIZE = 10 * 1024 * 1024;
+
+  function setError(groupId, show) {
+    var el = document.getElementById(groupId);
+    if (el) {
+      if (show) el.classList.add('field-error');
+      else el.classList.remove('field-error');
+    }
+  }
+
+  function getCheckedValues(name) {
+    var boxes = document.querySelectorAll('input[name="' + name + '"]:checked');
+    var vals = [];
+    for (var i = 0; i < boxes.length; i++) vals.push(boxes[i].value);
+    return vals;
+  }
+
+  function getRadioValue(name) {
+    var sel = document.querySelector('input[name="' + name + '"]:checked');
+    return sel ? sel.value : '';
+  }
+
+  function isValidEmail(email) {
+    return email.indexOf('@') > 0 && email.indexOf('.') > email.indexOf('@');
+  }
+
+  function isValidPhone(phone) {
+    var digits = phone.replace(/[^0-9]/g, '');
+    return digits.length >= 8;
+  }
+
+  function validateForm() {
+    var valid = true;
+    var firstError = null;
+
+    function check(groupId, condition) {
+      setError(groupId, !condition);
+      if (!condition && valid) { valid = false; firstError = groupId; }
+    }
+
+    check('group-requestDate', document.getElementById('requestDate').value);
+    check('group-hospitalName', document.getElementById('hospitalName').value.trim());
+    check('group-hospitalDepartment', document.getElementById('hospitalDepartment').value.trim());
+    check('group-requestingDoctor', document.getElementById('requestingDoctor').value.trim());
+    check('group-patientFullName', document.getElementById('patientFullName').value.trim());
+    check('group-patientDOB',
+      dobDay.value && dobMonth.value && dobYear.value);
+    check('group-patientPhone', isValidPhone(document.getElementById('patientPhone').value));
+    check('group-patientAddress', document.getElementById('patientAddress').value.trim());
+    check('group-patientMedicare', document.getElementById('patientMedicare').value.trim());
+    check('group-clinicalTests', getCheckedValues('clinicalTests').length > 0);
+    check('group-preExistingConditions', getCheckedValues('preExistingConditions').length > 0);
+    check('group-resultsEmail', isValidEmail(document.getElementById('resultsEmail').value.trim()));
+
+    // File validation
+    var fileInput = document.getElementById('fileUpload');
+    if (fileInput.files.length > 0) {
+      var file = fileInput.files[0];
+      var ext = '.' + file.name.split('.').pop().toLowerCase();
+      if (file.size > MAX_FILE_SIZE || ACCEPTED_EXTS.indexOf(ext) === -1) {
+        setError('group-fileUpload', true);
+        if (valid) { valid = false; firstError = 'group-fileUpload'; }
+      } else {
+        setError('group-fileUpload', false);
+      }
+    } else {
+      setError('group-fileUpload', false);
+    }
+
+    if (firstError) {
+      var el = document.getElementById(firstError);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    return valid;
+  }
+
+  // ── Collect form data ────────────────────────────────────────────────
+  function collectFields() {
+    return {
+      requestDate:           document.getElementById('requestDate').value,
+      hospitalName:          document.getElementById('hospitalName').value.trim(),
+      hospitalNameOther:     document.getElementById('hospitalNameOther').value.trim(),
+      hospitalDepartment:    document.getElementById('hospitalDepartment').value.trim(),
+      requestingDoctor:      document.getElementById('requestingDoctor').value.trim(),
+      providerNo:            document.getElementById('providerNo').value.trim(),
+      patientFullName:       document.getElementById('patientFullName').value.trim(),
+      patientDOB:            dobDay.value + '/' + dobMonth.value + '/' + dobYear.value,
+      patientPhone:          document.getElementById('patientPhone').value.trim(),
+      patientAddress:        document.getElementById('patientAddress').value.trim(),
+      patientMedicare:       document.getElementById('patientMedicare').value.trim(),
+      gender:                getRadioValue('gender'),
+      urgentResults:         document.getElementById('urgentResults').checked,
+      recentHB:              document.getElementById('recentHB').checked,
+      clinicalTests:         getCheckedValues('clinicalTests'),
+      preExistingConditions: getCheckedValues('preExistingConditions'),
+      clinicalNotes:         document.getElementById('clinicalNotes').value.trim(),
+      resultsEmail:          document.getElementById('resultsEmail').value.trim()
+    };
+  }
+
+  // ── File to base64 ──────────────────────────────────────────────────
+  function readFileAsBase64(file) {
+    return new Promise(function(resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function() { resolve(reader.result.split(',')[1]); };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+
+  // ── Submit handler ──────────────────────────────────────────────────
+  var form = document.getElementById('referralForm');
+  var submitBtn = document.getElementById('submitBtn');
+  var errorBanner = document.getElementById('errorBanner');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    errorBanner.style.display = 'none';
+
+    if (!validateForm()) return;
+
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span class="spinner"></span> Submitting...';
+
+    (async function() {
+      try {
+        var fields = collectFields();
+        var fileData = null;
+        var fileInput = document.getElementById('fileUpload');
+
+        if (fileInput.files.length > 0) {
+          var file = fileInput.files[0];
+          var base64 = await readFileAsBase64(file);
+          fileData = {
+            name: file.name,
+            mimeType: file.type || 'application/octet-stream',
+            data: base64
+          };
+        }
+
+        var payload = {
+          formType: FORM_TYPE,
+          fields: fields,
+          file: fileData
+        };
+
+        await fetch(SUBMIT_ENDPOINT, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'text/plain' },
+          body: JSON.stringify(payload)
+        });
+
+        // Success — show confirmation
+        form.style.display = 'none';
+        document.getElementById('successMessage').style.display = 'block';
+
+      } catch (err) {
+        errorBanner.textContent = 'There was a problem submitting your referral. Please try again or contact us at (08) 9331 6371.';
+        errorBanner.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit Referral';
+      }
+    })();
+  });
+
+  // ── Reset form ──────────────────────────────────────────────────────
+  window.resetForm = function() {
+    form.reset();
+    form.style.display = 'block';
+    document.getElementById('successMessage').style.display = 'none';
+    errorBanner.style.display = 'none';
+    submitBtn.disabled = false;
+    submitBtn.textContent = 'Submit Referral';
+    // Clear all error states
+    var errors = form.querySelectorAll('.field-error');
+    for (var i = 0; i < errors.length; i++) errors[i].classList.remove('field-error');
+    window.scrollTo(0, 0);
+  };
+})();
+</script>
+</body>
+</html>
