@@ -1,6 +1,12 @@
 # RTS Referral Forms
 
-Self-contained HTML referral forms for Respiratory Testing Solutions, with a Google Apps Script backend for email delivery, Google Sheet logging, and Drive file storage.
+Self-contained HTML referral forms for Respiratory Testing Services, with a Google Apps Script backend for email delivery, Google Sheet logging, and Drive file storage. Hosted on GitHub Pages and embedded in Wix via iframe.
+
+## Live Form URLs
+
+- **Hospital:** https://ahabse7en.github.io/rts-referral-forms/hospital-referral.html
+- **GP:** https://ahabse7en.github.io/rts-referral-forms/gp-referral.html
+- **Patient:** https://ahabse7en.github.io/rts-referral-forms/patient-referral.html
 
 ## Files
 
@@ -9,8 +15,11 @@ referral-forms/
 ├── hospital-referral.html    # Hospital referral form
 ├── gp-referral.html          # GP referral form
 ├── patient-referral.html     # Patient referral form
+├── styles.css                # Shared stylesheet (all 3 forms)
+├── success.html              # Fallback success page
 ├── apps-script/
 │   └── Code.gs               # Google Apps Script backend
+├── config-ids.txt            # Private config IDs (gitignored)
 └── README.md                 # This file
 ```
 
@@ -62,56 +71,49 @@ referral-forms/
 
 ### 4. Configure the HTML Forms
 
-In each HTML file (`hospital-referral.html`, `gp-referral.html`, `patient-referral.html`), find the line:
+Each form has three config variables at the top of its `<script>` section:
 
 ```js
-var SUBMIT_ENDPOINT = '';
+var SUBMIT_ENDPOINT = '';   // Google Apps Script deployment URL
+var FORM_TYPE = 'hospital'; // Don't change this
+var SUCCESS_URL = '';       // Wix success page URL (redirects the whole browser after submit)
 ```
 
-Replace the empty string with your Apps Script Web app URL:
-
-```js
-var SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbx.../exec';
-```
+- **SUBMIT_ENDPOINT** — your Apps Script web app URL
+- **SUCCESS_URL** — a Wix page to redirect to after successful submission (e.g. `https://www.respiratorytesting.com.au/hospital-referral-submitted`). If left empty, an inline success message is shown instead.
 
 ### 5. Embed in Wix
 
-**Option A — Paste HTML directly:**
-1. Open Wix Editor
-2. Navigate to the relevant referral page
+1. Host the HTML files on GitHub Pages (already done)
+2. In Wix Editor, navigate to the referral page
 3. Remove or hide the existing Wix form
-4. Add Elements > Embed Code > Embed HTML
-5. Paste the entire HTML file contents
+4. Add Elements > Embed Code > **Embed a Site**
+5. Enter the GitHub Pages URL for the form
 6. Resize the element (width: 100% of column, height: ~1400-2000px)
-7. Preview and test
-8. Publish
-
-**Option B — Host externally (recommended):**
-1. Host the HTML files at a stable HTTPS URL (GitHub Pages, Netlify, etc.)
-2. In Wix, use "Embed a Site" and enter the URL
-3. Future updates only require editing the hosted file — no Wix changes needed
+7. Create a corresponding success page in Wix for the post-submit redirect
+8. Preview, test, and publish
 
 ## How It Works
 
-1. User fills in the form in their browser
+1. User fills in the form in their browser (inside a Wix iframe)
 2. On submit, the form converts any attached file to base64
 3. All field data + file are sent as a JSON POST to the Apps Script
 4. The Apps Script:
    - Saves the attachment to Google Drive (in a form-type subfolder)
    - Appends a row to the correct Google Sheet tab
    - Sends a formatted HTML email with all field data and the attachment to the admin email
-5. The form shows a success confirmation message
+5. The form redirects the browser to a Wix success page
 
-## Updating the Apps Script
+## Updating
 
-After making changes to Code.gs:
+**Forms (HTML/CSS):** Edit files locally, commit, and `git push`. GitHub Pages auto-deploys — no Wix changes needed.
+
+**Apps Script (Code.gs):** After making changes:
 1. Go to your Apps Script project
-2. Click **Deploy > Manage deployments**
-3. Click the edit (pencil) icon on your deployment
-4. Change **Version** to **New version**
-5. Click **Deploy**
+2. Replace the code with the updated Code.gs
+3. Click **Deploy > Manage deployments** > edit > **New version** > Deploy
 
-The URL stays the same — no need to update the HTML forms.
+The deployment URL stays the same.
 
 ## Quotas
 
