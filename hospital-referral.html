@@ -33,11 +33,10 @@
 <body>
 
 <div class="form-container">
-  <!-- Success message (hidden until submission) -->
+  <!-- Success message (fallback if not embedded in Wix) -->
   <div class="success-message" id="successMessage">
     <h2>Thank You</h2>
     <p>Your referral has been submitted. Our team will be in touch shortly.</p>
-    <a onclick="resetForm()">Submit another referral</a>
   </div>
 
   <!-- Form -->
@@ -226,8 +225,9 @@
   'use strict';
 
   // ── Configuration ────────────────────────────────────────────────────
-  var SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxtwNuGKH1hWLNiyeWUJXeztDAAn0PtP1AntHzveuRCr-i8E7Kibcnv4KhPEnW5dmvdBw/exec'; // Paste your Google Apps Script deployment URL here
+  var SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxtwNuGKH1hWLNiyeWUJXeztDAAn0PtP1AntHzveuRCr-i8E7Kibcnv4KhPEnW5dmvdBw/exec';
   var FORM_TYPE = 'hospital';
+  var SUCCESS_URL = ''; // Wix success page URL — redirects the whole browser
 
   // ── Populate DOB dropdowns ───────────────────────────────────────────
   var dobDay   = document.getElementById('dobDay');
@@ -420,11 +420,13 @@
           body: JSON.stringify(payload)
         });
 
-        // Success — show confirmation
-        form.style.display = 'none';
-        document.getElementById('successMessage').style.display = 'block';
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
+        // Success — redirect parent page or show inline message
+        if (SUCCESS_URL) {
+          window.top.location.href = SUCCESS_URL;
+        } else {
+          form.style.display = 'none';
+          document.getElementById('successMessage').style.display = 'block';
+        }
 
       } catch (err) {
         errorBanner.textContent = 'There was a problem submitting your referral. Please try again or contact us at (08) 9331 6371.';

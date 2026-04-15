@@ -179,8 +179,9 @@
 (function() {
   'use strict';
 
-  var SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxtwNuGKH1hWLNiyeWUJXeztDAAn0PtP1AntHzveuRCr-i8E7Kibcnv4KhPEnW5dmvdBw/exec'; // Paste your Google Apps Script deployment URL here
+  var SUBMIT_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxtwNuGKH1hWLNiyeWUJXeztDAAn0PtP1AntHzveuRCr-i8E7Kibcnv4KhPEnW5dmvdBw/exec';
   var FORM_TYPE = 'patient';
+  var SUCCESS_URL = ''; // Wix success page URL — redirects the whole browser
 
   // ── Populate DOB dropdowns ───────────────────────────────────────────
   var dobDay   = document.getElementById('dobDay');
@@ -358,10 +359,12 @@
           body: JSON.stringify(payload)
         });
 
-        form.style.display = 'none';
-        document.getElementById('successMessage').style.display = 'block';
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
+        if (SUCCESS_URL) {
+          window.top.location.href = SUCCESS_URL;
+        } else {
+          form.style.display = 'none';
+          document.getElementById('successMessage').style.display = 'block';
+        }
 
       } catch (err) {
         errorBanner.textContent = 'There was a problem submitting your referral. Please try again or contact us at (08) 9331 6371.';
