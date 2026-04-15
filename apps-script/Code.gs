@@ -212,106 +212,127 @@ function buildSheetRow(formType, f, driveFileUrl) {
 // ── Build email HTML ─────────────────────────────────────────────────────────
 
 function buildEmailHtml(formType, f, file) {
-  var html = '';
   var heading = '';
-
   if (formType === 'hospital') heading = 'Hospital Referral';
   if (formType === 'gp')       heading = 'GP Referral';
   if (formType === 'patient')  heading = 'Patient Referral';
 
-  html += '<div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">';
-  html += '<h2 style="color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;">';
-  html += 'New ' + heading + ' Submission</h2>';
-  html += '<p style="color: #666;">Submitted: ' + Utilities.formatDate(new Date(), 'Australia/Perth', 'dd/MM/yyyy HH:mm') + ' AWST</p>';
+  var timestamp = Utilities.formatDate(new Date(), 'Australia/Perth', 'dd/MM/yyyy HH:mm');
+  var patientName = f.patientFullName || f.fullName || '';
+
+  var h = '';
+
+  // Outer wrapper
+  h += '<div style="font-family: Helvetica, \'Helvetica Neue\', sans-serif; max-width: 640px; margin: 0 auto; color: #2d3748; font-size: 14px; line-height: 1.6;">';
+
+  // Header banner
+  h += '<div style="background: #1a3c5e; color: #fff; padding: 20px 24px; border-radius: 8px 8px 0 0;">';
+  h += '<h1 style="margin: 0; font-size: 20px; font-weight: 600;">New ' + heading + '</h1>';
+  h += '<p style="margin: 6px 0 0; font-size: 13px; color: #b0c4de;">' + timestamp + ' AWST</p>';
+  h += '</div>';
+
+  // Body
+  h += '<div style="border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px; padding: 0;">';
 
   // Patient Details
-  html += sectionHeading('Patient Details');
-
+  h += sectionHeading('Patient Details');
+  h += '<table style="width: 100%; border-collapse: collapse;">';
   if (formType === 'patient') {
-    html += row('Name', f.fullName);
-    html += row('DOB', f.dob);
-    html += row('Phone', f.phone);
-    html += row('Address', f.address);
-    html += row('Medicare', f.medicare);
-    html += row('Gender', f.gender);
+    h += row('Name', f.fullName);
+    h += row('DOB', f.dob);
+    h += row('Phone', f.phone);
+    h += row('Address', f.address);
+    h += row('Medicare', f.medicare);
+    h += row('Gender', f.gender);
   } else {
-    html += row('Name', f.patientFullName);
-    html += row('DOB', f.patientDOB);
-    html += row('Phone', f.patientPhone);
-    html += row('Address', f.patientAddress);
-    html += row('Medicare', f.patientMedicare);
-    html += row('Gender', f.gender);
+    h += row('Name', f.patientFullName);
+    h += row('DOB', f.patientDOB);
+    h += row('Phone', f.patientPhone);
+    h += row('Address', f.patientAddress);
+    h += row('Medicare', f.patientMedicare);
+    h += row('Gender', f.gender);
   }
+  h += '</table>';
 
   // Referral Details
-  html += sectionHeading('Referral Details');
-  html += row('Request Date', f.requestDate);
-
+  h += sectionHeading('Referral Details');
+  h += '<table style="width: 100%; border-collapse: collapse;">';
+  h += row('Request Date', f.requestDate);
   if (formType === 'hospital') {
-    html += row('Hospital', f.hospitalName);
-    if (f.hospitalNameOther) html += row('Hospital (Other)', f.hospitalNameOther);
-    html += row('Department', f.hospitalDepartment);
-    html += row('Doctor / Consultant', f.requestingDoctor);
-    html += row('Provider No', f.providerNo);
+    h += row('Hospital', f.hospitalName);
+    if (f.hospitalNameOther) h += row('Hospital (Other)', f.hospitalNameOther);
+    h += row('Department', f.hospitalDepartment);
+    h += row('Doctor / Consultant', f.requestingDoctor);
+    h += row('Provider No', f.providerNo);
   }
-
   if (formType === 'gp') {
-    html += row('Practice', f.practiceName);
-    html += row('Practice Address', f.practiceAddress);
-    html += row('Requesting GP', f.requestingGP);
-    html += row('Provider No', f.providerNo);
+    h += row('Practice', f.practiceName);
+    h += row('Practice Address', f.practiceAddress);
+    h += row('Requesting GP', f.requestingGP);
+    h += row('Provider No', f.providerNo);
   }
-
   if (formType === 'patient') {
-    html += row('GP Practice', f.gpPracticeName);
-    html += row('Requesting GP', f.requestingGP);
+    h += row('GP Practice', f.gpPracticeName);
+    h += row('Requesting GP', f.requestingGP);
   }
+  h += '</table>';
 
   // Clinical
-  html += sectionHeading('Clinical');
-  html += row('Tests Requested', formatArray(f.clinicalTests));
-
+  h += sectionHeading('Clinical');
+  h += '<table style="width: 100%; border-collapse: collapse;">';
+  h += row('Tests Requested', formatArray(f.clinicalTests));
   if (formType === 'hospital' || formType === 'gp') {
-    html += row('Pre-existing Conditions', formatArray(f.preExistingConditions));
-    html += row('Urgent Results', f.urgentResults ? 'Yes' : 'No');
-    html += row('Recent HB (<3 months)', f.recentHB ? 'Yes' : 'No');
-    html += row('Clinical Notes', f.clinicalNotes || '(none)');
+    h += row('Pre-existing Conditions', formatArray(f.preExistingConditions));
+    h += row('Urgent Results', f.urgentResults ? '<span style="color: #c53030; font-weight: 600;">Yes</span>' : 'No');
+    h += row('Recent HB (<3 months)', f.recentHB ? 'Yes' : 'No');
+    h += row('Clinical Notes', f.clinicalNotes || '<span style="color: #a0aec0;">—</span>');
   }
-
-  // Location
   if (formType === 'gp' || formType === 'patient') {
-    html += row('Preferred Location', formatArray(f.preferredLocation));
+    h += row('Preferred Location', formatArray(f.preferredLocation));
   }
+  h += '</table>';
 
   // Results email
   if (formType === 'hospital' || formType === 'gp') {
-    html += sectionHeading('Results');
-    html += row('Results Email', f.resultsEmail);
+    h += sectionHeading('Results');
+    h += '<table style="width: 100%; border-collapse: collapse;">';
+    h += row('Send Results To', f.resultsEmail);
+    h += '</table>';
   }
 
   // Attachment
   if (file && file.name) {
-    html += sectionHeading('Attachment');
-    html += row('File', file.name + ' (attached)');
+    h += sectionHeading('Attachment');
+    h += '<table style="width: 100%; border-collapse: collapse;">';
+    h += row('File', file.name + ' (attached)');
+    h += '</table>';
   }
 
-  html += '</div>';
-  return html;
+  h += '</div>'; // end body
+
+  // Footer
+  h += '<p style="text-align: center; font-size: 11px; color: #a0aec0; margin-top: 16px;">Respiratory Testing Services — Referral Form Submission</p>';
+
+  h += '</div>'; // end wrapper
+  return h;
 }
 
 // ── Email HTML helpers ───────────────────────────────────────────────────────
 
 function sectionHeading(title) {
-  return '<h3 style="color: #2c3e50; margin-top: 20px; margin-bottom: 8px; '
-       + 'border-bottom: 1px solid #ddd; padding-bottom: 4px;">' + title + '</h3>';
+  return '<div style="background: #f7fafc; padding: 10px 24px; border-top: 1px solid #e2e8f0;">'
+       + '<h3 style="margin: 0; font-size: 13px; font-weight: 600; color: #1a3c5e; text-transform: uppercase; letter-spacing: 0.5px;">'
+       + title + '</h3></div>';
 }
 
 function row(label, value) {
-  return '<p style="margin: 4px 0;"><strong>' + label + ':</strong> '
-       + (value || '') + '</p>';
+  return '<tr>'
+       + '<td style="padding: 8px 24px; width: 180px; color: #718096; font-size: 13px; vertical-align: top;">' + label + '</td>'
+       + '<td style="padding: 8px 24px; color: #2d3748; font-size: 14px; vertical-align: top;">' + (value || '') + '</td>'
+       + '</tr>';
 }
 
 function formatArray(val) {
   if (Array.isArray(val) && val.length > 0) return val.join(', ');
-  return '(none)';
+  return '<span style="color: #a0aec0;">—</span>';
 }

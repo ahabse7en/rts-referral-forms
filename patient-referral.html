@@ -360,6 +360,8 @@
 
         form.style.display = 'none';
         document.getElementById('successMessage').style.display = 'block';
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
 
       } catch (err) {
         errorBanner.textContent = 'There was a problem submitting your referral. Please try again or contact us at (08) 9331 6371.';
